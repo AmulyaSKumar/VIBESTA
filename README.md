@@ -110,9 +110,6 @@ The application includes robust error handling with fallback content:
 - If APIs experience errors, Gemini generates appropriate content
 - All user actions have proper error handling with helpful messages
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgements
 
