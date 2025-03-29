@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VIBESTA - Festival Information Hub{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Dancing+Script:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Confetti JS for festive effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Tailwind Config Inject -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        festival: {
+                            primary: '#FF6B6B',    // Vibrant warm red
+                            secondary: '#FFD166',  // Festive yellow/gold
+                            accent: '#06D6A0',     // Bright turquoise
+                            dark: '#073B4C',       // Deep blue for contrast
+                            light: '#FFF7ED',      // Warm off-white
+                            orange: '#F76E11',     // Vibrant orange
+                            purple: '#9B5DE5',     // Festive purple
+                            pink: '#F15BB5',       // Bright pink
+                            green: '#00F5D4',      // Bright teal
+                            blue: '#0077B6'        // Vibrant blue
+                        }
+                    },
+                    fontFamily: {
+                        'display': ['Montserrat', 'sans-serif'],
+                        'body': ['Poppins', 'sans-serif'],
+                        'script': ['Dancing Script', 'cursive']
+                    },
+                    animation: {
+                        'festival-pulse': 'festival-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'sparkle': 'sparkle 1.5s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        'festival-pulse': {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.7 },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'sparkle': {
+                            '0%, 100%': { opacity: 1, transform: 'scale(1)' },
+                            '50%': { opacity: 0.6, transform: 'scale(1.2)' },
+                        }
+                    },
+                    backgroundImage: {
+                        'festival-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff6b6b' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        /* Festival Theme Custom Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFF7ED;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 209, 102, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, rgba(6, 214, 160, 0.07) 0%, transparent 35%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff6b6b' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffb800' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .festival-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .festival-card::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFD166 50%, #06D6A0 100%);
+            z-index: -1;
+            transform: scale(0.98);
+            border-radius: inherit;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .festival-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .festival-card:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .festival-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFD166 100%);
+        }
+        
+        .festival-gradient-full {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFD166 50%, #06D6A0 100%);
+        }
+        
+        .festival-border {
+            position: relative;
+        }
+        
+        .festival-border::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #FF6B6B, #FFD166, #06D6A0);
+        }
+        
+        .festival-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .festival-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right, 
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 6s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            20%, 100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        /* Loading Animation */
+        .festival-loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FF6B6B;
+            border-bottom-color: #FFD166;
+            border-right-color: #06D6A0;
+            border-radius: 50%;
+            animation: rotation 1.5s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #FFF7ED; 
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #FF6B6B, #FFD166); 
+            border-radius: 10px;
+            border: 3px solid #FFF7ED;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #e45a5a, #e6bb5c); 
+        }
+        
+        /* Animated Festival Icons */
+        .festival-icon {
+            animation: float 6s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        .festival-icon-fast {
+            animation: float 4s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        .festival-sparkle {
+            animation: sparkle 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5), 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-festival {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFD166 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-festival:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-festival:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-festival::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+            z-index: -1;
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+        
+        .btn-festival:hover::after {
+            opacity: 1;
+            transform: rotate(30deg) translate(10%, 10%);
+        }
+        
+        .festival-card .tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #FF6B6B 0%, #F76E11 100%);
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+            z-index: 10;
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen">
+    <!-- Decorative Elements -->
+    <div class="fixed w-48 h-48 bg-festival-secondary opacity-10 rounded-full -top-20 -left-20 animate-spin-slow"></div>
+    <div class="fixed w-64 h-64 bg-festival-primary opacity-10 rounded-full -bottom-32 -right-32 animate-spin-slow" style="animation-delay: 2s; animation-direction: reverse;"></div>
+    
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50 border-b-4 border-gradient-to-r from-festival-primary via-festival-secondary to-festival-accent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <a href="/" class="flex-shrink-0 flex items-center group">
+                        <div class="festival-icon text-3xl mr-3 group-hover:scale-110 transition-transform">🪔</div>
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-festival-primary to-festival-orange">VIBESTA</h1>
+                            <p class="text-xs text-gray-500 font-script tracking-wider">Celebrate Culture Together</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex md:items-center md:space-x-5">
+                    <a href="/" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-festival-primary hover:bg-gray-50 transition flex items-center">
+                        <i class="fas fa-home mr-2"></i> Home
+                    </a>
+                    <a href="/search" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-festival-primary hover:bg-gray-50 transition flex items-center">
+                        <i class="fas fa-search mr-2"></i> Search Festivals
+                    </a>
+                    <a href="/upload" class="btn-festival flex items-center shadow-lg">
+                        <i class="fas fa-upload mr-2 festival-sparkle"></i> Share Experience
+                    </a>
+                </div>
+                
+                <!-- Mobile Navigation Button -->
+                <div class="flex items-center md:hidden">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-festival-primary hover:bg-gray-50 focus:outline-none transition" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-festival-primary hover:bg-gray-50 transition flex items-center">
+                    <i class="fas fa-home mr-2"></i> Home
+                </a>
+                <a href="/search" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-festival-primary hover:bg-gray-50 transition flex items-center">
+                    <i class="fas fa-search mr-2"></i> Search Festivals
+                </a>
+                <a href="/upload" class="block px-3 py-2 rounded-md text-base font-medium bg-gradient-to-r from-festival-primary to-festival-orange text-white hover:from-festival-primary hover:to-festival-primary transition flex items-center mt-2 shadow-md">
+                    <i class="fas fa-upload mr-2"></i> Share Experience
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 mb-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{% if category == 'error' %}bg-red-100 border-l-4 border-red-500 text-red-700{% else %}bg-green-100 border-l-4 border-green-500 text-green-700{% endif %} p-4 mb-4 rounded-md shadow-md flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                {% if category == 'error' %}
+                                    <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+                                {% else %}
+                                    <i class="fas fa-check-circle text-green-500 text-xl festival-icon-fast"></i>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm md:text-base">{{ message }}</p>
+                            </div>
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="p-1.5 rounded-full hover:bg-opacity-20 {% if category == 'error' %}hover:bg-red-300 text-red-500{% else %}hover:bg-green-300 text-green-500{% endif %} focus:outline-none transition">
+                            <span class="sr-only">Dismiss</span>
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-festival-dark to-festival-dark/90 text-white mt-20 relative overflow-hidden">
+
+                <div class="border-t border-white/10 py-4 bg-black/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 text-sm mb-4 md:mb-0">
+                    © 2025 VIBESTA. All rights reserved.
+                </div>
+
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Random confetti bursts for festive feeling
+        function randomConfettiBurst() {
+            const colors = ['#FF6B6B', '#FFD166', '#06D6A0', '#F76E11', '#9B5DE5'];
+            
+            confetti({
+                particleCount: 50,
+                angle: Math.random() * 360,
+                spread: 70,
+                origin: { 
+                    x: Math.random(),
+                    y: Math.random() 
+                },
+                colors: colors.sort(() => 0.5 - Math.random()).slice(0, 3),
+                disableForReducedMotion: true
+            });
+            
+            // Schedule next burst
+            setTimeout(randomConfettiBurst, Math.random() * 60000 + 30000); // Between 30s and 90s
+        }
+        
+        // Start confetti after page load
+        window.addEventListener('load', function() {
+            setTimeout(randomConfettiBurst, 5000);
+        });
+        
+        // Page-specific scripts
+        {% block page_script %}{% endblock %}
+    </script>
+</body>
+</html> 
